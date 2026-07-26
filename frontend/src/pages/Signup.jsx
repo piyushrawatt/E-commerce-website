@@ -51,7 +51,7 @@ function Signup() {
 
       alert("Account created successfully!");
 
-      navigate("/login");
+      navigate("/main");
     } catch (err) {
       seterr(err.response?.data?.message || "Signup failed");
     } finally {
