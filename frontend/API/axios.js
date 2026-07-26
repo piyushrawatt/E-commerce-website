@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const API = axios.create({
-    baseURL:"https://e-commerce-website-3-61c1.onrender.com/"
+    baseURL:import.meta.env.VITE_BACKEND_URL
 })
 
 API.interceptors.request.use((req) => {

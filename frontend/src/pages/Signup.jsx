@@ -35,7 +35,7 @@ const req = await API.post("/api/auth/signup",{
   password :data.password
 })
  alert("account created successfully")
- navigate("/login")
+ navigate("/main")
         }
         catch(err){
    console.log(err.response?.data);
