@@ -7,7 +7,7 @@ import Cart from "./pages/Cart"
 import { Routes, Route } from "react-router-dom";
 import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
-import OrderSuccess from "./pages/Ordersuccess";
+import OrderSuccess from "./pages/OrderSuccess";
 import Order from "./pages/Order";
 function App() {
   return (
