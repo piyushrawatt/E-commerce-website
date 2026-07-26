@@ -1,137 +1,191 @@
-import React, { useState } from 'react'
-import API from '../../API/axios.js'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import API from "../../API/axios";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Mail, Lock, ShoppingBag } from "lucide-react";
+
 function Signup() {
-  const navigate = useNavigate()
-    const [data ,setdata] = useState({
-        fullname : "",
-        email : "",
-        password : "",
-       confirmpass:""
-    })
-    const [loading,setloading] = useState(false)
-    const [err,seterr] = useState("")
-    const showdata = async(e)=>{
-setdata({
-    ...data,
-    [e.target.name]:e.target.value
-})
+  const navigate = useNavigate();
 
-}
-    const handlesubmit  = async(e)=>{
-        e.preventDefault()
-        if(!data.fullname || !data.email || !data.password || !data.confirmpass){
-         return alert("please fill all the field")
-        }
-        if(data.password !=data.confirmpass){
-        return    alert("pass is incorrect")
-        }
-        try{
-        setloading(true)
-        seterr("")
-const req = await API.post("/api/auth/signup",{
-  name : data.fullname,
-  email :data.email,
-  password :data.password
-})
- alert("account created successfully")
- navigate("/main")
-        }
-        catch(err){
-   console.log(err.response?.data);
-  console.log(err.response?.status);
- seterr(err.response.data.message || "Signup failed");
-        }
-     finally{
-      setloading(false)
-     }
-       
+  const [data, setdata] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    confirmpass: "",
+  });
+
+  const [loading, setloading] = useState(false);
+  const [err, seterr] = useState("");
+
+  const showdata = (e) => {
+    setdata({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !data.fullname ||
+      !data.email ||
+      !data.password ||
+      !data.confirmpass
+    ) {
+      return alert("Please fill all fields");
     }
+
+    if (data.password !== data.confirmpass) {
+      return alert("Passwords do not match");
+    }
+
+    try {
+      setloading(true);
+      seterr("");
+
+      await API.post("/api/auth/signup", {
+        name: data.fullname,
+        email: data.email,
+        password: data.password,
+      });
+
+      alert("Account created successfully!");
+
+      navigate("/login");
+    } catch (err) {
+      seterr(err.response?.data?.message || "Signup failed");
+    } finally {
+      setloading(false);
+    }
+  };
+
   return (
-   <div className="min-h-screen flex justify-center items-center bg-gray-600">
-  <div className="w-[500px] bg-white rounded-3xl p-6">
-    
-   
-    <div className="flex flex-col items-center mb-6">
-      <img
-        className="h-20 w-fit rounded-full"
-        src="herosec.png"
-        alt=""
-      />
-{/* 
-      <p className="text-2xl font-bold">
-        Shop <span className="text-orange-500">Ease</span>
-      </p> */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-amber-200 to-orange-300 p-5">
 
-      <p className="text-gray-500">Shop more, worry less</p>
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
 
-      <h1 className="text-3xl font-bold mt-4">
-        Create Account
-      </h1>
- {err && (
-            <p className="text-red-500 text-center text-sm font-semibold">{err}</p>
-          )}
-      <p className="text-gray-500">
-        Sign up to get started
-      </p>
-    </div>
+        {/* Logo */}
 
-    {/* Form */}
-    <form
-      onSubmit={handlesubmit}
-      className="flex flex-col gap-4"
-    >
-      <input
-        name="fullname"
-        value={data.fullname}
-        onChange={showdata}
-        placeholder="Enter your name"
-        className="border p-3 rounded-xl"
-      />
+        <div className="flex flex-col items-center">
 
-      <input
-        name="email"
-         value={data.email}
-        onChange={showdata}
-        placeholder="Enter your email"
-        className="border p-3 rounded-xl"
-      />
+          <div className="bg-orange-500 text-white rounded-full p-4">
+            <ShoppingBag size={35} />
+          </div>
 
-      <input
-        name="password"
-         value={data.password}
-        onChange={showdata}
-        placeholder="Create a password"
-        className="border p-3 rounded-xl"
-      />
+          <h1 className="text-3xl font-bold mt-4">
+            Shop<span className="text-orange-500">Ease</span>
+          </h1>
 
-      <input
-        name="confirmpass"
-         value={data.confirmpass}
-        onChange={showdata}
-        placeholder="Confirm your password"
-        className="border p-3 rounded-xl"
-      />
+          <p className="text-gray-500 mt-2">
+            Create your account
+          </p>
 
-      <div className="flex items-center gap-2">
-        <input type="checkbox" />
-        <p className="text-sm">
-          I agree to Terms & Conditions
+        </div>
+
+        {err && (
+          <div className="bg-red-100 border border-red-300 text-red-600 rounded-lg p-3 mt-5 text-center">
+            {err}
+          </div>
+        )}
+
+        <form
+          onSubmit={handlesubmit}
+          className="space-y-5 mt-6"
+        >
+
+          <div>
+            <label className="font-medium">Full Name</label>
+
+            <div className="flex items-center border rounded-xl px-3 mt-2">
+              <User className="text-gray-400" size={18} />
+              <input
+                type="text"
+                name="fullname"
+                value={data.fullname}
+                onChange={showdata}
+                placeholder="Enter your full name"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-medium">Email</label>
+
+            <div className="flex items-center border rounded-xl px-3 mt-2">
+              <Mail className="text-gray-400" size={18} />
+              <input
+                type="email"
+                name="email"
+                value={data.email}
+                onChange={showdata}
+                placeholder="Enter your email"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-medium">Password</label>
+
+            <div className="flex items-center border rounded-xl px-3 mt-2">
+              <Lock className="text-gray-400" size={18} />
+              <input
+                type="password"
+                name="password"
+                value={data.password}
+                onChange={showdata}
+                placeholder="Create a password"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-medium">Confirm Password</label>
+
+            <div className="flex items-center border rounded-xl px-3 mt-2">
+              <Lock className="text-gray-400" size={18} />
+              <input
+                type="password"
+                name="confirmpass"
+                value={data.confirmpass}
+                onChange={showdata}
+                placeholder="Confirm password"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" required />
+            I agree to the Terms & Conditions
+          </label>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-orange-500 hover:bg-orange-600 transition text-white rounded-xl p-3 font-semibold"
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+
+        </form>
+
+        <p className="text-center text-gray-500 mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-orange-500 font-semibold hover:underline"
+          >
+            Login
+          </Link>
         </p>
+
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-orange-500 text-white py-3 rounded-xl active:bg-amber-500"
-      >
-       {loading ? "Creating..." : "Sign Up"}
-      </button>
-    </form>
-
-  </div>
-</div>
-  )
+    </div>
+  );
 }
 
-export default Signup
+export default Signup;

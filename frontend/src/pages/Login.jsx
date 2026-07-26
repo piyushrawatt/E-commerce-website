@@ -1,87 +1,159 @@
-import React, { useState } from 'react'
-import API from '../../API/axios'
-import { useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import API from "../../API/axios";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, ShoppingBag } from "lucide-react";
+
 function Login() {
-  const navigate = useNavigate()
-  const [logindata,setlogindata] = useState({
-    email:"",
-    password:""
-  })
-  const [loading ,setloading] = useState(false)
-  const [err,seterr] = useState("")
-  const showlogindata = async(e)=>{
-setlogindata({
-  ...logindata,
-  [e.target.name]:e.target.value
-})
-  }
-const submitlogin = async (e) => {
-  e.preventDefault();
+  const navigate = useNavigate();
 
-  if (!logindata.email || !logindata.password) {
-    return alert("All fields are required");
-  }
+  const [logindata, setlogindata] = useState({
+    email: "",
+    password: "",
+  });
 
-  try {
-    setloading(true);
+  const [loading, setloading] = useState(false);
+  const [err, seterr] = useState("");
 
-    const req = await API.post("/api/auth/login", {
-      email: logindata.email,
-      password: logindata.password,
+  const showlogindata = (e) => {
+    setlogindata({
+      ...logindata,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    console.log(req.data);
+  const submitlogin = async (e) => {
+    e.preventDefault();
 
-    // ✅ Save only the access token
-    localStorage.setItem("token", req.data.accessToken);
+    if (!logindata.email || !logindata.password) {
+      return alert("All fields are required");
+    }
 
-    console.log("Stored Token:", localStorage.getItem("token"));
+    try {
+      setloading(true);
 
-    alert("Login Successfully");
+      const req = await API.post("/api/auth/login", logindata);
 
-    navigate("/main");
+      localStorage.setItem("token", req.data.accessToken);
 
-  } catch (err) {
-    seterr(err.response?.data?.message || "Login failed");
-  } finally {
-    setloading(false);
-  }
-};
+      alert("Login Successfully");
 
-  
+      navigate("/main");
+    } catch (err) {
+      seterr(err.response?.data?.message || "Login Failed");
+    } finally {
+      setloading(false);
+    }
+  };
+
   return (
-    <div className='w-full h-screen flex items-center justify-center  bg-amber-900'>
-     
-      <div className='flex   flex-col  w-100 rounded-2xl border items-center bg-white'>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-amber-200 to-orange-300 p-5">
 
-     <div className='flex flex-col items-center mt-3 text-center'>  
-        <img className='h-20 w-fit rounded-full' 
-        src="herosec.png"
-         alt="" />
-        {/* <p className='text-2xl'>Shop <span className=' text-amber-600 font-bold'>Ease</span></p> */}
-        <p className='font-extralight text-xl text-gray-500'>shop more worry less</p>
-        <h1 className='pt-5 text-2xl font-bold tracking-wide'>Welcome Back</h1>
-        <p className='text-gray-500 font-light'>login to your account</p>
-        </div> 
-        <form onSubmit={submitlogin}  className='flex flex-col  p-5 w-full'>
-         {err && (
-            <p className="text-red-500 text-center text-sm font-semibold">{err}</p>
-          )}
-            <label className='pl-4 '  htmlFor="">Email address</label>
-            <input name='email' onChange={showlogindata} value={logindata.email} className='h-10 p-2 rounded-2xl border placeholder:p-5  ' placeholder='Enter your email password' type="text" />
-            <label  className='pl-4 pt-4' htmlFor="">Password</label>
-          <input  name='password'  onChange={showlogindata} value={logindata.password} className='h-10 p-2 rounded-2xl border placeholder:p-5  ' placeholder='Enter your email password' type="password" />
-         <div className='flex justify-between p-3'> <div><input type="checkbox" name="" id="info" /> <label htmlFor="" id='info'>Remember me</label> </div>  <a href="#">forget pass</a></div>  
-        <button type='submit' disabled={loading} className='text-center border rounded-2xl bg-amber-500 h-10 m-3'>{loading? "logining":"login"}</button>
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
+
+        {/* Logo */}
+
+        <div className="flex flex-col items-center">
+
+          <div className="bg-amber-500 p-4 rounded-full text-white">
+            <ShoppingBag size={35} />
+          </div>
+
+          <h1 className="text-3xl font-bold mt-4">
+            Shop<span className="text-amber-500">Ease</span>
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Login to continue shopping
+          </p>
+
+        </div>
+
+        {err && (
+          <div className="bg-red-100 border border-red-300 text-red-600 rounded-lg p-3 mt-5 text-center">
+            {err}
+          </div>
+        )}
+
+        <form
+          onSubmit={submitlogin}
+          className="space-y-5 mt-6"
+        >
+
+          <div>
+
+            <label className="font-medium">Email</label>
+
+            <div className="flex items-center border rounded-xl mt-2 px-3">
+              <Mail className="text-gray-400" size={18} />
+              <input
+                type="email"
+                name="email"
+                value={logindata.email}
+                onChange={showlogindata}
+                placeholder="Enter your email"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+
+          </div>
+
+          <div>
+
+            <label className="font-medium">Password</label>
+
+            <div className="flex items-center border rounded-xl mt-2 px-3">
+              <Lock className="text-gray-400" size={18} />
+              <input
+                type="password"
+                name="password"
+                value={logindata.password}
+                onChange={showlogindata}
+                placeholder="Enter your password"
+                className="w-full p-3 outline-none"
+              />
+            </div>
+
+          </div>
+
+          <div className="flex justify-between text-sm">
+
+            <label className="flex items-center gap-2">
+              <input type="checkbox" />
+              Remember me
+            </label>
+
+            <Link
+              to="/forgot-password"
+              className="text-amber-500 hover:underline"
+            >
+              Forgot Password?
+            </Link>
+
+          </div>
+
+          <button
+            disabled={loading}
+            className="w-full bg-amber-500 hover:bg-amber-600 transition text-white rounded-xl p-3 font-semibold"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
         </form>
-        <div className='text-gray-400  text-center'>---------------- <span className='text-2xl'>or</span>------------------</div>
-        <div>ff</div>
-        <div>fff</div>
-        <p>dont have account? <a href="">Signup</a></p>
+
+        <p className="text-center text-gray-500 mt-6">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-amber-500 font-semibold"
+          >
+            Sign Up
+          </Link>
+        </p>
+
       </div>
+
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
