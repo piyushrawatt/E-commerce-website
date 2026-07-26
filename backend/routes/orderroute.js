@@ -4,7 +4,7 @@ import {
   getMyOrders,
   getSingleOrder,
   updateOrderStatus,
-} from "../controllers/orderController.js";
+} from "../controllers/ordercontroller.js";
 
 import { protect } from "../middleware/authmiddleware.js";
 
